@@ -121,15 +121,7 @@ const CampaignList = () => {
                       {campaign.summary}
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-3 border-y">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <DollarSign className="w-4 h-4 text-primary" />
-                        <span className="text-muted-foreground">予算:</span>
-                        <span className="font-medium text-foreground">
-                          {formatCurrency(campaign.budgetMin)} - {formatCurrency(campaign.budgetMax)}
-                        </span>
-                      </div>
-                      
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 border-y">
                       <div className="flex items-center space-x-2 text-sm">
                         <Calendar className="w-4 h-4 text-destructive" />
                         <span className="text-muted-foreground">締切:</span>

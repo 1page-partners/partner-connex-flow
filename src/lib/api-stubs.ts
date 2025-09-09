@@ -6,8 +6,6 @@ export interface CampaignPayload {
   summary: string;
   requirements: string;
   platforms: string[];
-  budgetMin: number;
-  budgetMax: number;
   deadline: string;
   restrictions: string;
   ndaUrl: string;

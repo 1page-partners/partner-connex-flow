@@ -7,8 +7,6 @@ export interface Campaign {
   summary: string;
   requirements: string;
   platforms: string[];
-  budgetMin: number;
-  budgetMax: number;
   deadline: string;
   restrictions: string;
   ndaUrl: string;
@@ -31,8 +29,6 @@ export const mockCampaigns: Campaign[] = [
 ・#提供 #PR のハッシュタグ必須
 ・事前に投稿内容の確認をさせていただきます`,
     platforms: ['Instagram', 'TikTok'],
-    budgetMin: 30000,
-    budgetMax: 80000,
     deadline: '2025-09-25',
     restrictions: `以下の点にご注意ください：
 ・競合他社の商品との比較は控えてください

@@ -71,26 +71,15 @@ const CampaignDetailCard = ({ campaign }: CampaignDetailCardProps) => {
             </div>
           </div>
 
-          {/* 予算・締切 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                <DollarSign className="w-4 h-4" />
-                予算レンジ
-              </h3>
-              <p className="text-lg font-semibold text-primary">
-                {formatCurrency(campaign.budgetMin)} - {formatCurrency(campaign.budgetMax)}
-              </p>
-            </div>
-            <div>
-              <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                締切日
-              </h3>
-              <p className="text-lg font-semibold text-destructive">
-                {formatDate(campaign.deadline)}
-              </p>
-            </div>
+          {/* 締切 */}
+          <div>
+            <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              締切日
+            </h3>
+            <p className="text-lg font-semibold text-destructive">
+              {formatDate(campaign.deadline)}
+            </p>
           </div>
 
           {/* 注意事項 */}

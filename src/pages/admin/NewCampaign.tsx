@@ -26,8 +26,6 @@ const NewCampaign = () => {
   const [summary, setSummary] = useState("");
   const [requirements, setRequirements] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  const [budgetMin, setBudgetMin] = useState<number>(0);
-  const [budgetMax, setBudgetMax] = useState<number>(0);
   const [deadline, setDeadline] = useState("");
   const [restrictions, setRestrictions] = useState("");
   const [ndaUrl, setNdaUrl] = useState("");
@@ -61,10 +59,6 @@ const NewCampaign = () => {
       newErrors.platforms = "少なくとも1つのプラットフォームを選択してください";
     }
 
-    if (budgetMax <= budgetMin) {
-      newErrors.budget = "最大予算は最小予算より大きい値を設定してください";
-    }
-
     if (!deadline) {
       newErrors.deadline = "締切日は必須です";
     }
@@ -92,8 +86,6 @@ const NewCampaign = () => {
         summary: summary.trim(),
         requirements: requirements.trim(),
         platforms: selectedPlatforms,
-        budgetMin,
-        budgetMax,
         deadline,
         restrictions: restrictions.trim(),
         ndaUrl: ndaUrl.trim(),
@@ -162,8 +154,6 @@ const NewCampaign = () => {
     summary,
     requirements,
     platforms: selectedPlatforms,
-    budgetMin,
-    budgetMax,
     deadline,
     restrictions,
     ndaUrl,
@@ -345,64 +335,24 @@ const NewCampaign = () => {
                 )}
               </div>
 
-              {/* 予算・締切 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="budget-min" className="text-sm font-medium">
-                    最小予算 (円)
-                  </Label>
-                  <Input
-                    id="budget-min"
-                    type="number"
-                    min="0"
-                    value={budgetMin || ''}
-                    onChange={(e) => {
-                      setBudgetMin(parseInt(e.target.value) || 0);
-                      if (errors.budget) setErrors(prev => ({ ...prev, budget: '' }));
-                    }}
-                    placeholder="30000"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="budget-max" className="text-sm font-medium">
-                    最大予算 (円)
-                  </Label>
-                  <Input
-                    id="budget-max"
-                    type="number"
-                    min="0"
-                    value={budgetMax || ''}
-                    onChange={(e) => {
-                      setBudgetMax(parseInt(e.target.value) || 0);
-                      if (errors.budget) setErrors(prev => ({ ...prev, budget: '' }));
-                    }}
-                    placeholder="80000"
-                    className={errors.budget ? "border-destructive" : ""}
-                  />
-                  {errors.budget && (
-                    <p className="text-xs text-destructive">{errors.budget}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="deadline" className="text-sm font-medium">
-                    締切日 <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="deadline"
-                    type="date"
-                    value={deadline}
-                    onChange={(e) => {
-                      setDeadline(e.target.value);
-                      if (errors.deadline) setErrors(prev => ({ ...prev, deadline: '' }));
-                    }}
-                    className={errors.deadline ? "border-destructive" : ""}
-                  />
-                  {errors.deadline && (
-                    <p className="text-xs text-destructive">{errors.deadline}</p>
-                  )}
-                </div>
+              {/* 締切 */}
+              <div className="space-y-2">
+                <Label htmlFor="deadline" className="text-sm font-medium">
+                  締切日 <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="deadline"
+                  type="date"
+                  value={deadline}
+                  onChange={(e) => {
+                    setDeadline(e.target.value);
+                    if (errors.deadline) setErrors(prev => ({ ...prev, deadline: '' }));
+                  }}
+                  className={errors.deadline ? "border-destructive" : ""}
+                />
+                {errors.deadline && (
+                  <p className="text-xs text-destructive">{errors.deadline}</p>
+                )}
               </div>
 
               {/* その他の設定 */}
