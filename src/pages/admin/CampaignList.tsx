@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import { SocialIconsList } from "@/components/SocialIcons";
 import { mockCampaigns, generateDistributionUrl } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Copy, Eye, Calendar, DollarSign, Check } from "lucide-react";
+import { Plus, Copy, Eye, Calendar, DollarSign, Check, ArrowLeft } from "lucide-react";
 
 const CampaignList = () => {
   const navigate = useNavigate();
@@ -58,9 +58,19 @@ const CampaignList = () => {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">案件一覧</h1>
-              <p className="text-muted-foreground">作成済みの案件と配布URLを管理します</p>
+            <div className="flex items-center space-x-4">
+              <Button
+                onClick={() => navigate('/')}
+                variant="ghost"
+                size="sm"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                戻る
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">案件一覧</h1>
+                <p className="text-muted-foreground">作成済みの案件と配布URLを管理します</p>
+              </div>
             </div>
             
             <Button

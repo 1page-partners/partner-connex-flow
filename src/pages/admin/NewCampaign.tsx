@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { saveCampaignToNotion } from "@/lib/api-stubs";
 import { addCampaign, platformOptions, statusOptions, generateDistributionUrl } from "@/lib/mock-data";
 import { SocialIcon } from "@/components/SocialIcons";
-import { Loader2, Eye, Copy, Check } from "lucide-react";
+import { Loader2, Eye, Copy, Check, ArrowLeft } from "lucide-react";
 
 const NewCampaign = () => {
   const navigate = useNavigate();
@@ -169,9 +169,19 @@ const NewCampaign = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">新規案件作成</h1>
-              <p className="text-muted-foreground">インフルエンサー配布用の案件を作成します</p>
+            <div className="flex items-center space-x-4">
+              <Button
+                onClick={() => navigate('/admin')}
+                variant="ghost"
+                size="sm"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                戻る
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">新規案件作成</h1>
+                <p className="text-muted-foreground">インフルエンサー配布用の案件を作成します</p>
+              </div>
             </div>
             
             <div className="flex space-x-2">
