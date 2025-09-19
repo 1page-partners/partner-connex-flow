@@ -188,7 +188,15 @@ const CampaignList = () => {
                           <Badge variant={campaign.status === 'open' ? 'default' : 'secondary'}>
                             {campaign.status === 'open' ? '募集中' : '募集終了'}
                           </Badge>
+                          {campaign.isTH && (
+                            <Badge variant="secondary">TH案件</Badge>
+                          )}
                         </div>
+                        {campaign.clientName && (
+                          <p className="text-sm text-muted-foreground mb-1">
+                            クライアント: {campaign.clientName}
+                          </p>
+                        )}
                         <p className="text-sm text-muted-foreground">
                           作成日: {formatDate(campaign.createdAt)}
                         </p>
@@ -201,10 +209,6 @@ const CampaignList = () => {
                   </CardHeader>
                   
                   <CardContent className="space-y-4">
-                    <p className="text-sm text-foreground leading-relaxed">
-                      {campaign.summary}
-                    </p>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 border-y">
                       <div className="flex items-center space-x-2 text-sm">
                         <Calendar className="w-4 h-4 text-destructive" />
@@ -215,6 +219,7 @@ const CampaignList = () => {
                       </div>
 
                       <div className="flex items-center space-x-2 text-sm">
+                        <span className="text-muted-foreground">想定媒体:</span>
                         <div className="flex space-x-1">
                           {campaign.platforms.map((platform) => (
                             <Badge key={platform} variant="outline" className="text-xs">
@@ -225,44 +230,43 @@ const CampaignList = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-foreground">配布URL</Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 p-3 bg-muted/30 rounded-md border">
-                        <code className="flex-1 text-sm text-foreground">
-                          {window.location.origin}{generateDistributionUrl(campaign.slug)}
-                        </code>
+                    <div className="flex items-center justify-between">
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                        >
+                          <Link to={`/admin/campaign/${campaign.id}`}>
+                            <Settings className="w-4 h-4 mr-2" />
+                            案件詳細
+                          </Link>
+                        </Button>
                         
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => copyDistributionUrl(campaign.slug, campaign.title)}
-                          >
-                            {copiedUrls.has(campaign.slug) ? (
-                              <Check className="w-4 h-4 text-success" />
-                            ) : (
-                              <Copy className="w-4 h-4" />
-                            )}
-                          </Button>
-                          
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                          >
-                            <Link to={generateDistributionUrl(campaign.slug)} target="_blank">
-                              <Eye className="w-4 h-4" />
-                            </Link>
-                          </Button>
-                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyDistributionUrl(campaign.slug, campaign.title)}
+                        >
+                          {copiedUrls.has(campaign.slug) ? (
+                            <Check className="w-4 h-4 mr-2 text-success" />
+                          ) : (
+                            <Copy className="w-4 h-4 mr-2" />
+                          )}
+                          配布URL
+                        </Button>
                       </div>
                       
-                      <p className="text-xs text-muted-foreground">
-                        このURLをインフルエンサーに共有してください
-                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        asChild
+                      >
+                        <Link to={generateDistributionUrl(campaign.slug)} target="_blank">
+                          <Eye className="w-4 h-4 mr-2" />
+                          プレビュー
+                        </Link>
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -296,7 +300,15 @@ const CampaignList = () => {
                                 {campaign.title}
                               </CardTitle>
                               <Badge variant="secondary">募集終了</Badge>
+                              {campaign.isTH && (
+                                <Badge variant="secondary">TH案件</Badge>
+                              )}
                             </div>
+                            {campaign.clientName && (
+                              <p className="text-sm text-muted-foreground mb-1">
+                                クライアント: {campaign.clientName}
+                              </p>
+                            )}
                             <p className="text-sm text-muted-foreground">
                               作成日: {formatDate(campaign.createdAt)}
                             </p>
@@ -309,10 +321,6 @@ const CampaignList = () => {
                       </CardHeader>
                       
                       <CardContent className="space-y-4">
-                        <p className="text-sm text-foreground leading-relaxed">
-                          {campaign.summary}
-                        </p>
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 border-y">
                           <div className="flex items-center space-x-2 text-sm">
                             <Calendar className="w-4 h-4 text-destructive" />
@@ -323,6 +331,7 @@ const CampaignList = () => {
                           </div>
 
                           <div className="flex items-center space-x-2 text-sm">
+                            <span className="text-muted-foreground">想定媒体:</span>
                             <div className="flex space-x-1">
                               {campaign.platforms.map((platform) => (
                                 <Badge key={platform} variant="outline" className="text-xs">
@@ -337,16 +346,30 @@ const CampaignList = () => {
                           <div className="text-sm text-muted-foreground">
                             {campaign.creators ? `${campaign.creators.length}名のクリエイターが参加` : 'クリエイター情報なし'}
                           </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                          >
-                            <Link to={`/admin/campaign/${campaign.id}`}>
-                              <Eye className="w-4 h-4 mr-2" />
-                              詳細を見る
-                            </Link>
-                          </Button>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                            >
+                              <Link to={`/admin/campaign/${campaign.id}`}>
+                                <Settings className="w-4 h-4 mr-2" />
+                                案件詳細
+                              </Link>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => copyDistributionUrl(campaign.slug, campaign.title)}
+                            >
+                              {copiedUrls.has(campaign.slug) ? (
+                                <Check className="w-4 h-4 mr-2 text-success" />
+                              ) : (
+                                <Copy className="w-4 h-4 mr-2" />
+                              )}
+                              配布URL
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>

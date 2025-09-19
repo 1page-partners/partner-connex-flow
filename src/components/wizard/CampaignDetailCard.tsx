@@ -57,6 +57,20 @@ const CampaignDetailCard = ({ campaign }: CampaignDetailCardProps) => {
             </p>
           </div>
 
+          {/* 画像資料 */}
+          {campaign.imageMaterials && campaign.imageMaterials.length > 0 && (
+            <div>
+              <h3 className="font-medium text-foreground mb-2">画像資料</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {campaign.imageMaterials.map((image, index) => (
+                  <div key={index} className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                    <span className="text-xs text-muted-foreground">画像 {index + 1}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* プラットフォーム・成果物 */}
           <div>
             <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
@@ -78,6 +92,15 @@ const CampaignDetailCard = ({ campaign }: CampaignDetailCardProps) => {
                   )}
                 </div>
               ))}
+              
+              {/* 納品動画制作のみの場合 */}
+              {campaign.isVideoProductionOnly && (
+                <div className="mt-2">
+                  <Badge variant="outline" className="bg-info/10 text-info border-info">
+                    納品動画の制作のみ
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
 
@@ -116,17 +139,32 @@ const CampaignDetailCard = ({ campaign }: CampaignDetailCardProps) => {
             </div>
           </div>
 
-          {/* 注意事項 */}
+          {/* NG事項・制約 */}
           {campaign.restrictions && (
             <div>
               <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-warning" />
-                注意事項・制約
+                NG事項・制約
               </h3>
               <div className="bg-warning/10 border border-warning/20 p-4 rounded-md">
                 <pre className="text-sm text-foreground whitespace-pre-wrap font-sans">
                   {campaign.restrictions}
                 </pre>
+              </div>
+            </div>
+          )}
+
+          {/* 添付資料 */}
+          {campaign.attachments && campaign.attachments.length > 0 && (
+            <div>
+              <h3 className="font-medium text-foreground mb-2">添付資料</h3>
+              <div className="space-y-2">
+                {campaign.attachments.map((attachment, index) => (
+                  <div key={index} className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                    <FileText className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm">資料 {index + 1}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}

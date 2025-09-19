@@ -463,57 +463,23 @@ const SubmissionFormEnhanced = ({ onNext, onBack, campaignId }: SubmissionFormEn
             ))}
           </div>
 
-          {/* 男女比 */}
-          <div className="space-y-3">
+          {/* インサイトスクリーンショット */}
+          <div className="space-y-2">
             <Label className="text-sm font-medium">
-              フォロワー男女比 <span className="text-destructive">*</span>
+              フォロワー男女比（インサイトスクリーンショット）
             </Label>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="male-ratio" className="text-xs text-muted-foreground">
-                  男性 (%)
-                </Label>
-                <Input
-                  id="male-ratio"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={genderRatio.male}
-                  onChange={(e) => {
-                    const male = parseInt(e.target.value) || 0;
-                    const female = 100 - male;
-                    setGenderRatio({ male, female });
-                    if (errors.genderRatio) setErrors(prev => ({ ...prev, genderRatio: '' }));
-                  }}
-                  className={errors.genderRatio ? "border-destructive" : ""}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="female-ratio" className="text-xs text-muted-foreground">
-                  女性 (%)
-                </Label>
-                <Input
-                  id="female-ratio"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={genderRatio.female}
-                  onChange={(e) => {
-                    const female = parseInt(e.target.value) || 0;
-                    const male = 100 - female;
-                    setGenderRatio({ male, female });
-                    if (errors.genderRatio) setErrors(prev => ({ ...prev, genderRatio: '' }));
-                  }}
-                  className={errors.genderRatio ? "border-destructive" : ""}
-                />
-              </div>
+            <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
+              <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground mb-2">
+                インサイト画面のスクリーンショットをアップロード
+              </p>
+              <p className="text-xs text-muted-foreground mb-3">
+                PNG, JPG, JPEG対応
+              </p>
+              <Button variant="outline" size="sm">
+                ファイルを選択
+              </Button>
             </div>
-            {errors.genderRatio && (
-              <p className="text-xs text-destructive">{errors.genderRatio}</p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              スクリーンショットでの提出も可能です（アップロード機能は今回省略）
-            </p>
           </div>
 
           {/* 連絡先情報 */}
