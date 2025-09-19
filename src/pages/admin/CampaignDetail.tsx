@@ -66,9 +66,6 @@ const CampaignDetail = () => {
               応募日: {formatDate(submission.submittedAt)}
             </p>
           </div>
-          <Badge variant={getStatusBadgeVariant(submission.status)}>
-            {getStatusText(submission.status)}
-          </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -103,32 +100,67 @@ const CampaignDetail = () => {
           </div>
         </div>
 
-        {/* SNS Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg mb-4">
-          {submission.instagram && (
-            <div className="text-center">
-              <div className="text-sm font-medium text-foreground">Instagram</div>
-              <div className="text-lg font-bold text-primary">{submission.instagram.followers.toLocaleString()}</div>
-              <div className="text-xs text-muted-foreground">フォロワー</div>
-              <div className="text-xs text-muted-foreground">エンゲージメント率: {submission.instagram.engagementRate}%</div>
+        {/* SNS Statistics and Insights */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg">
+            {submission.instagram && (
+              <div className="text-center">
+                <div className="text-sm font-medium text-foreground">Instagram</div>
+                <div className="text-lg font-bold text-primary">{submission.instagram.followers.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">フォロワー</div>
+                <div className="text-xs text-muted-foreground">エンゲージメント率: {submission.instagram.engagementRate}%</div>
+              </div>
+            )}
+            {submission.tiktok && (
+              <div className="text-center">
+                <div className="text-sm font-medium text-foreground">TikTok</div>
+                <div className="text-lg font-bold text-primary">{submission.tiktok.followers.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">フォロワー</div>
+                <div className="text-xs text-muted-foreground">総再生数: {submission.tiktok.views.toLocaleString()}</div>
+              </div>
+            )}
+            {submission.youtube && (
+              <div className="text-center">
+                <div className="text-sm font-medium text-foreground">YouTube</div>
+                <div className="text-lg font-bold text-primary">{submission.youtube.subscribers.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">登録者</div>
+                <div className="text-xs text-muted-foreground">総再生数: {submission.youtube.views.toLocaleString()}</div>
+              </div>
+            )}
+          </div>
+
+          {/* SNS Insights Upload Section */}
+          <div className="p-4 border border-dashed border-muted-foreground/30 rounded-lg">
+            <div className="text-sm font-medium text-foreground mb-2">SNSインサイト</div>
+            <div className="text-xs text-muted-foreground mb-3">
+              Instagram、TikTok、YouTubeのインサイト画像・データをアップロード
             </div>
-          )}
-          {submission.tiktok && (
-            <div className="text-center">
-              <div className="text-sm font-medium text-foreground">TikTok</div>
-              <div className="text-lg font-bold text-primary">{submission.tiktok.followers.toLocaleString()}</div>
-              <div className="text-xs text-muted-foreground">フォロワー</div>
-              <div className="text-xs text-muted-foreground">総再生数: {submission.tiktok.views.toLocaleString()}</div>
-            </div>
-          )}
-          {submission.youtube && (
-            <div className="text-center">
-              <div className="text-sm font-medium text-foreground">YouTube</div>
-              <div className="text-lg font-bold text-primary">{submission.youtube.subscribers.toLocaleString()}</div>
-              <div className="text-xs text-muted-foreground">登録者</div>
-              <div className="text-xs text-muted-foreground">総再生数: {submission.youtube.views.toLocaleString()}</div>
-            </div>
-          )}
+            {submission.portfolioFiles && submission.portfolioFiles.some(file => 
+              file.toLowerCase().includes('insight') || 
+              file.toLowerCase().includes('analytics') ||
+              file.toLowerCase().includes('インサイト')
+            ) ? (
+              <div className="flex flex-wrap gap-2">
+                {submission.portfolioFiles.filter(file => 
+                  file.toLowerCase().includes('insight') || 
+                  file.toLowerCase().includes('analytics') ||
+                  file.toLowerCase().includes('インサイト')
+                ).map((file, index) => (
+                  <Badge key={index} variant="outline" className="cursor-pointer bg-primary/10 text-primary">
+                    <BarChart3 className="w-3 h-3 mr-1" />
+                    {file}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-3">
+                <BarChart3 className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                <div className="text-xs text-muted-foreground">
+                  インサイト画像がアップロードされていません
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {submission.notes && (
