@@ -40,6 +40,42 @@ export interface Creator {
   deliverableUrl: string;
 }
 
+export interface InfluencerSubmission {
+  id: string;
+  campaignId: string;
+  influencerName: string;
+  email: string;
+  phone: string;
+  instagram?: {
+    handle: string;
+    followers: number;
+    engagementRate: number;
+  };
+  tiktok?: {
+    handle: string;
+    followers: number;
+    views: number;
+  };
+  youtube?: {
+    handle: string;
+    subscribers: number;
+    views: number;
+  };
+  red?: {
+    handle: string;
+    followers: number;
+  };
+  otherPlatforms?: string;
+  portfolioFiles?: string[];
+  contactMethods: string[];
+  contactEmail?: string;
+  preferredFee?: string;
+  followerInsightScreenshot?: string;
+  notes?: string;
+  submittedAt: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
 // Mock campaign data
 export const mockCampaigns: Campaign[] = [
   {
@@ -171,3 +207,86 @@ export const statusOptions = [
   { value: 'open', label: '募集中' },
   { value: 'closed', label: '募集終了' }
 ];
+
+// Mock submission data
+export const mockSubmissions: InfluencerSubmission[] = [
+  {
+    id: 'submission-1',
+    campaignId: 'demo-campaign-1',
+    influencerName: '山田花子',
+    email: 'hanako@example.com',
+    phone: '090-1234-5678',
+    instagram: {
+      handle: '@hanako_beauty',
+      followers: 15000,
+      engagementRate: 4.5
+    },
+    tiktok: {
+      handle: '@hanako_tiktok',
+      followers: 8000,
+      views: 120000
+    },
+    portfolioFiles: ['portfolio1.pdf', 'portfolio2.jpg'],
+    contactMethods: ['instagram', 'email'],
+    contactEmail: 'hanako@example.com',
+    preferredFee: '¥50,000',
+    followerInsightScreenshot: 'insights1.jpg',
+    notes: '美容系コンテンツを中心に投稿しています。丁寧な投稿を心がけています。',
+    submittedAt: '2025-09-05T14:30:00Z',
+    status: 'pending'
+  },
+  {
+    id: 'submission-2',
+    campaignId: 'demo-campaign-1',
+    influencerName: '佐藤みお',
+    email: 'mio@example.com',
+    phone: '080-9876-5432',
+    instagram: {
+      handle: '@mio_lifestyle',
+      followers: 25000,
+      engagementRate: 3.8
+    },
+    youtube: {
+      handle: '@MioChannel',
+      subscribers: 12000,
+      views: 500000
+    },
+    portfolioFiles: ['mio_portfolio.pdf'],
+    contactMethods: ['instagram', 'line'],
+    preferredFee: '¥75,000',
+    followerInsightScreenshot: 'insights2.jpg',
+    notes: 'ライフスタイル系の投稿が得意です。動画制作の経験もあります。',
+    submittedAt: '2025-09-06T09:15:00Z',
+    status: 'approved'
+  },
+  {
+    id: 'submission-3',
+    campaignId: 'demo-campaign-2',
+    influencerName: '田中美咲',
+    email: 'misaki@example.com',
+    phone: '070-1111-2222',
+    instagram: {
+      handle: '@misaki_fashion',
+      followers: 32000,
+      engagementRate: 5.2
+    },
+    tiktok: {
+      handle: '@misaki_style',
+      followers: 18000,
+      views: 250000
+    },
+    portfolioFiles: ['fashion_portfolio.pdf', 'lookbook.jpg'],
+    contactMethods: ['instagram', 'email'],
+    contactEmail: 'misaki@example.com',
+    preferredFee: '¥100,000',
+    followerInsightScreenshot: 'insights3.jpg',
+    notes: 'ファッション系インフルエンサーとして3年の実績があります。',
+    submittedAt: '2025-07-10T16:45:00Z',
+    status: 'approved'
+  }
+];
+
+// Get submissions by campaign ID
+export const getSubmissionsByCampaignId = (campaignId: string): InfluencerSubmission[] => {
+  return mockSubmissions.filter(submission => submission.campaignId === campaignId);
+};
