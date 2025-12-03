@@ -7,54 +7,90 @@ import BranchButtons from "@/components/wizard/BranchButtons";
 import SubmissionFormEnhanced from "@/components/wizard/SubmissionFormEnhanced";
 import OptInForm from "@/components/wizard/OptInForm";
 import ThanksPane from "@/components/wizard/ThanksPane";
-import { getCampaignByToken } from "@/lib/mock-data";
-import { Campaign } from "@/lib/mock-data";
+import { campaignApi, Campaign } from "@/lib/api";
+import { Loader2 } from "lucide-react";
+
+// CampaignDetailCard用に変換
+interface CampaignDisplay {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  requirements?: string;
+  platforms: string[];
+  deadline: string;
+  restrictions?: string;
+  ndaUrl?: string;
+  status: 'open' | 'closed';
+  contactEmail?: string;
+  createdAt: string;
+}
 
 const InfluencerWizard = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const [campaign, setCampaign] = useState<CampaignDisplay | null>(null);
   const [isAccepted, setIsAccepted] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) {
-      navigate('/404');
-      return;
-    }
+    const fetchCampaign = async () => {
+      if (!token) {
+        navigate('/404');
+        return;
+      }
 
-    const foundCampaign = getCampaignByToken(token);
-    if (!foundCampaign) {
-      navigate('/404');
-      return;
-    }
+      try {
+        const foundCampaign = await campaignApi.getBySlug(token);
+        if (!foundCampaign) {
+          navigate('/404');
+          return;
+        }
 
-    setCampaign(foundCampaign);
+        // API結果をUIで使える形式に変換
+        const displayCampaign: CampaignDisplay = {
+          id: foundCampaign.id,
+          title: foundCampaign.title,
+          slug: foundCampaign.slug,
+          summary: foundCampaign.summary || '',
+          platforms: foundCampaign.platforms || [],
+          deadline: foundCampaign.deadline,
+          status: foundCampaign.status as 'open' | 'closed',
+          createdAt: foundCampaign.created_at,
+        };
+
+        setCampaign(displayCampaign);
+      } catch (error) {
+        console.error('キャンペーン取得エラー:', error);
+        navigate('/404');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampaign();
   }, [token, navigate]);
 
   const handleNext = () => {
     setCurrentStep(prev => prev + 1);
-    // 次のページへ進むときに最上部にスクロール
     window.scrollTo(0, 0);
   };
 
   const handleBack = () => {
     setCurrentStep(prev => prev - 1);
-    // 前のページに戻るときも最上部にスクロール
     window.scrollTo(0, 0);
   };
 
   const handleAccept = () => {
     setIsAccepted(true);
     setCurrentStep(3);
-    // 次のページへ進むときに最上部にスクロール
     window.scrollTo(0, 0);
   };
 
   const handleDecline = () => {
     setIsAccepted(false);
     setCurrentStep(3);
-    // 次のページへ進むときに最上部にスクロール
     window.scrollTo(0, 0);
   };
 
@@ -67,14 +103,7 @@ const InfluencerWizard = () => {
     if (!campaign) {
       return (
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="text-lg font-semibold text-foreground mb-2">
-              読み込み中...
-            </div>
-            <div className="text-muted-foreground">
-              案件情報を取得しています
-            </div>
-          </div>
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       );
     }
@@ -90,7 +119,7 @@ const InfluencerWizard = () => {
       case 2:
         return (
           <div className="space-y-6">
-            <CampaignDetailCard campaign={campaign} />
+            <CampaignDetailCard campaign={campaign as any} />
             <BranchButtons 
               onAccept={handleAccept}
               onDecline={handleDecline}
@@ -129,6 +158,14 @@ const InfluencerWizard = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   if (!campaign) {
     return (
       <div className="min-h-screen bg-background">
@@ -152,7 +189,7 @@ const InfluencerWizard = () => {
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* ステッパー表示（ヘッダーなし） */}
+        {/* ステッパー表示 */}
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-2">
             {Array.from({ length: 4 }, (_, i) => i + 1).map((step) => (
