@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock } from 'lucide-react';
 
@@ -12,6 +13,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -47,10 +49,7 @@ const Auth = () => {
             variant: 'destructive',
           });
         } else {
-          toast({
-            title: '登録完了',
-            description: '確認メールを送信しました。メールを確認してください。',
-          });
+          navigate('/admin/registration-complete');
         }
       }
     } catch (err) {
@@ -97,7 +96,7 @@ const Auth = () => {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -105,6 +104,19 @@ const Auth = () => {
                   required
                   minLength={6}
                 />
+              </div>
+              <div className="flex items-center space-x-2 pt-1">
+                <Checkbox 
+                  id="showPassword" 
+                  checked={showPassword}
+                  onCheckedChange={(checked) => setShowPassword(checked === true)}
+                />
+                <Label 
+                  htmlFor="showPassword" 
+                  className="text-sm font-normal text-muted-foreground cursor-pointer"
+                >
+                  パスワードを表示
+                </Label>
               </div>
             </div>
 
