@@ -4,7 +4,27 @@ import { campaignApi, Campaign } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SocialIcon } from "@/components/SocialIcons";
-import { Loader2, Calendar, AlertCircle } from "lucide-react";
+import { Loader2, Calendar, AlertCircle, Image, File, FileText } from "lucide-react";
+
+// ファイルタイプを判定するヘルパー関数
+const getFileType = (url: string): 'image' | 'video' | 'pdf' | 'other' => {
+  const urlWithoutQuery = url.split('?')[0];
+  const extension = urlWithoutQuery.split('.').pop()?.toLowerCase() || '';
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
+  if (['mp4', 'mov', 'avi', 'webm'].includes(extension)) return 'video';
+  if (extension === 'pdf') return 'pdf';
+  return 'other';
+};
+
+const getFileName = (url: string): string => {
+  const parts = url.split('/');
+  const filename = parts[parts.length - 1];
+  try {
+    return decodeURIComponent(filename.split('?')[0]);
+  } catch {
+    return filename.split('?')[0];
+  }
+};
 
 const CampaignDetailOnly = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -165,6 +185,109 @@ const CampaignDetailOnly = () => {
               <div>
                 <h3 className="font-semibold mb-2 text-destructive">NG事項・制約</h3>
                 <p className="text-muted-foreground whitespace-pre-wrap">{campaign.restrictions}</p>
+              </div>
+            )}
+
+            {/* 画像資料 */}
+            {campaign.image_materials && campaign.image_materials.length > 0 && (
+              <div>
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Image className="w-4 h-4" />
+                  画像資料
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {campaign.image_materials.map((imageUrl, index) => {
+                    const fileType = getFileType(imageUrl);
+                    return (
+                      <div key={index} className="relative aspect-video bg-muted rounded-lg overflow-hidden border">
+                        {fileType === 'image' ? (
+                          <img 
+                            src={imageUrl} 
+                            alt={`画像資料 ${index + 1}`}
+                            className="w-full h-full object-cover select-none pointer-events-none"
+                            onContextMenu={(e) => e.preventDefault()}
+                            draggable={false}
+                          />
+                        ) : fileType === 'video' ? (
+                          <video 
+                            src={imageUrl}
+                            className="w-full h-full object-cover"
+                            controls
+                            controlsList="nodownload"
+                            onContextMenu={(e) => e.preventDefault()}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <FileText className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 添付資料 */}
+            {campaign.attachments && campaign.attachments.length > 0 && (
+              <div>
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <File className="w-4 h-4" />
+                  添付資料
+                </h3>
+                <div className="space-y-3">
+                  {campaign.attachments.map((attachmentUrl, index) => {
+                    const fileType = getFileType(attachmentUrl);
+                    const fileName = getFileName(attachmentUrl);
+                    return (
+                      <div key={index} className="border rounded-lg overflow-hidden">
+                        {fileType === 'image' ? (
+                          <div className="relative">
+                            <img 
+                              src={attachmentUrl} 
+                              alt={`添付資料 ${index + 1}`}
+                              className="w-full max-h-[300px] object-contain bg-muted select-none pointer-events-none"
+                              onContextMenu={(e) => e.preventDefault()}
+                              draggable={false}
+                            />
+                            <div className="p-2 bg-muted/50 border-t">
+                              <span className="text-xs text-muted-foreground truncate block">{fileName}</span>
+                            </div>
+                          </div>
+                        ) : fileType === 'video' ? (
+                          <div className="relative">
+                            <video 
+                              src={attachmentUrl}
+                              className="w-full max-h-[300px]"
+                              controls
+                              controlsList="nodownload"
+                              onContextMenu={(e) => e.preventDefault()}
+                            />
+                            <div className="p-2 bg-muted/50 border-t">
+                              <span className="text-xs text-muted-foreground truncate block">{fileName}</span>
+                            </div>
+                          </div>
+                        ) : fileType === 'pdf' ? (
+                          <div className="relative">
+                            <iframe 
+                              src={`${attachmentUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                              className="w-full h-[400px] border-0"
+                              title={`PDF資料 ${index + 1}`}
+                            />
+                            <div className="p-2 bg-muted/50 border-t">
+                              <span className="text-xs text-muted-foreground truncate block">{fileName}</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3 p-3 bg-muted/30">
+                            <FileText className="w-6 h-6 text-muted-foreground flex-shrink-0" />
+                            <span className="text-sm truncate">{fileName}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </CardContent>
