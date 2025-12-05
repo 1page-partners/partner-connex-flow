@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { campaignApi, Campaign } from '@/lib/api';
-import { Plus, Search, Calendar, Copy, ExternalLink, Eye, Filter, Loader2, FileText } from 'lucide-react';
+import { Plus, Search, Calendar, Copy, ExternalLink, Eye, Filter, Loader2, FileText, Link2 } from 'lucide-react';
 import { SocialIconsList } from '@/components/SocialIcons';
 
 const platformOptions = [
@@ -41,10 +41,16 @@ const CampaignList = () => {
     fetchCampaigns();
   }, [toast]);
 
-  const copyDistributionUrl = (slug: string, campaignTitle: string) => {
+  const copyConsentUrl = (slug: string, campaignTitle: string) => {
     const url = `${window.location.origin}/i/${slug}`;
     navigator.clipboard.writeText(url);
-    toast({ title: 'URLをコピーしました', description: `${campaignTitle}の配布URLをコピーしました` });
+    toast({ title: '許諾取得用URLをコピーしました', description: `${campaignTitle}` });
+  };
+
+  const copyDetailOnlyUrl = (slug: string, campaignTitle: string) => {
+    const url = `${window.location.origin}/c/${slug}`;
+    navigator.clipboard.writeText(url);
+    toast({ title: '詳細のみ配布用URLをコピーしました', description: `${campaignTitle}` });
   };
 
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -79,9 +85,18 @@ const CampaignList = () => {
         </div>
         <div className="flex items-center gap-2 mb-4"><SocialIconsList platforms={campaign.platforms} /></div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" asChild><Link to={`/admin/campaign/${campaign.id}`}><Eye className="h-4 w-4 mr-1" />詳細</Link></Button>
-          <Button variant="outline" size="sm" onClick={() => copyDistributionUrl(campaign.slug, campaign.title)}><Copy className="h-4 w-4 mr-1" />URLコピー</Button>
-          <Button variant="outline" size="sm" asChild><Link to={`/i/${campaign.slug}`} target="_blank"><ExternalLink className="h-4 w-4 mr-1" />プレビュー</Link></Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`/admin/campaign/${campaign.id}`}><Eye className="h-4 w-4 mr-1" />詳細</Link>
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => copyConsentUrl(campaign.slug, campaign.title)}>
+            <Copy className="h-4 w-4 mr-1" />許諾取得用
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => copyDetailOnlyUrl(campaign.slug, campaign.title)}>
+            <Link2 className="h-4 w-4 mr-1" />詳細のみ
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`/i/${campaign.slug}`} target="_blank"><ExternalLink className="h-4 w-4 mr-1" />プレビュー</Link>
+          </Button>
         </div>
       </CardContent>
     </Card>
