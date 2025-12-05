@@ -142,6 +142,8 @@ const CreatorDetail = () => {
       'email': 'メール',
       'phone': '電話',
       'instagram': 'Instagram DM',
+      'tiktok': 'TikTok DM',
+      'x': 'X DM',
       'line': 'LINE',
       'other': 'その他'
     };
@@ -339,12 +341,6 @@ const CreatorDetail = () => {
                 <p className="flex items-center gap-2"><Phone className="h-4 w-4" />{submission.phone}</p>
               </div>
             )}
-            {submission.contact_email && (
-              <div>
-                <div className="text-sm font-medium text-muted-foreground mb-1">連絡先メール</div>
-                <p>{submission.contact_email}</p>
-              </div>
-            )}
             {submission.preferred_fee && (
               <div>
                 <div className="text-sm font-medium text-muted-foreground mb-1">希望報酬</div>
@@ -359,6 +355,12 @@ const CreatorDetail = () => {
                     <Badge key={index} variant="outline">{formatContactMethod(method)}</Badge>
                   ))}
                 </div>
+              </div>
+            )}
+            {submission.contact_methods?.includes('email') && submission.contact_email && (
+              <div>
+                <div className="text-sm font-medium text-muted-foreground mb-1">連絡先メールアドレス</div>
+                <p className="flex items-center gap-2"><Mail className="h-4 w-4" />{submission.contact_email}</p>
               </div>
             )}
             {submission.contact_methods?.includes('line') && (submission as any).line_id && (

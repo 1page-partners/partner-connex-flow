@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { FileUpload } from "@/components/ui/file-upload";
@@ -456,15 +455,14 @@ const SubmissionFormEnhanced = ({ onNext, onBack, campaignId, isPreview = false 
     );
   };
 
-  const handleContactMethodToggle = (method: string, checked: boolean) => {
-    if (checked) {
-      setContactMethods([...contactMethods, method]);
-    } else {
-      setContactMethods(contactMethods.filter(m => m !== method));
-      // Clear related fields if method is unchecked
-      if (method === 'email') {
-        setContactEmail('');
-      }
+  const handleContactMethodChange = (method: string) => {
+    setContactMethods([method]);
+    // Clear related fields when changing method
+    if (method !== 'email') {
+      setContactEmail('');
+    }
+    if (method !== 'line') {
+      setContactLineId('');
     }
     if (errors.contactMethods) {
       setErrors(prev => ({ ...prev, contactMethods: '' }));
@@ -601,18 +599,7 @@ const SubmissionFormEnhanced = ({ onNext, onBack, campaignId, isPreview = false 
 
           {/* SNSアカウント */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">活動SNS</Label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addSocialAccount}
-                type="button"
-              >
-                <Plus className="w-4 h-4 mr-1" />
-                アカウント追加
-              </Button>
-            </div>
+            <Label className="text-sm font-medium">活動SNS</Label>
 
             {socialAccounts.map((account, index) => (
               <Card key={index} className={`p-4 bg-muted/30 ${errors[`socialAccount_${index}`] ? 'border-destructive' : ''}`}>
@@ -750,6 +737,17 @@ const SubmissionFormEnhanced = ({ onNext, onBack, campaignId, isPreview = false 
                 </div>
               </Card>
             ))}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={addSocialAccount}
+              type="button"
+              className="w-full"
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              アカウント追加
+            </Button>
           </div>
 
           {/* インサイトスクリーンショット */}
@@ -805,12 +803,13 @@ const SubmissionFormEnhanced = ({ onNext, onBack, campaignId, isPreview = false 
               <div className="grid grid-cols-2 gap-3">
                 {contactMethodOptions.map((method) => (
                   <div key={method.value} className="flex items-center space-x-2">
-                    <Checkbox
+                    <input
+                      type="radio"
                       id={method.value}
+                      name="contactMethod"
                       checked={contactMethods.includes(method.value)}
-                      onCheckedChange={(checked) =>
-                        handleContactMethodToggle(method.value, checked === true)
-                      }
+                      onChange={() => handleContactMethodChange(method.value)}
+                      className="h-4 w-4 text-primary"
                     />
                     <Label htmlFor={method.value} className="text-sm cursor-pointer">
                       {method.label}

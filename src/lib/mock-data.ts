@@ -200,6 +200,7 @@ export const secondaryUsageDurationOptions = [
 export const contactMethodOptions = [
   { value: 'instagram', label: 'Instagram DM' },
   { value: 'tiktok', label: 'TikTok DM' },
+  { value: 'x', label: 'X DM' },
   { value: 'line', label: 'LINE' },
   { value: 'email', label: 'メール' }
 ];
