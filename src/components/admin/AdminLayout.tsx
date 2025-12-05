@@ -37,7 +37,6 @@ const navItems = [
   { title: 'ホーム', url: '/', icon: Home, adminOnly: false },
   { title: 'ダッシュボード', url: '/admin', icon: LayoutDashboard, adminOnly: false },
   { title: '案件一覧', url: '/admin/list', icon: List, adminOnly: false },
-  { title: '新規案件作成', url: '/admin/new', icon: PlusCircle, adminOnly: false },
   { title: 'クリエイターリスト', url: '/admin/creators', icon: UserCircle, adminOnly: false },
   { title: 'メンバー管理', url: '/admin/members', icon: Users, adminOnly: true },
 ];
@@ -74,6 +73,16 @@ function AdminSidebar() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* 新規案件作成ボタン */}
+      <div className="p-3">
+        <Button asChild className="w-full bg-primary hover:bg-primary/90" size={collapsed ? 'icon' : 'default'}>
+          <Link to="/admin/new">
+            <PlusCircle className="h-4 w-4" />
+            {!collapsed && <span className="ml-2">新規案件作成</span>}
+          </Link>
+        </Button>
       </div>
       
       <SidebarContent>
