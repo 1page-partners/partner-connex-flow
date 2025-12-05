@@ -209,11 +209,6 @@ const CreatorDetail = () => {
     );
   }
 
-  const igFollowers = getFollowers(submission.instagram, 'followers');
-  const ttFollowers = getFollowers(submission.tiktok, 'followers');
-  const ytSubs = getFollowers(submission.youtube, 'subscribers');
-  const redFollowers = getFollowers(submission.red, 'followers');
-
   const igHandle = getAccountHandle(submission.instagram);
   const ttHandle = getAccountHandle(submission.tiktok);
   const ytHandle = getAccountHandle(submission.youtube);
@@ -222,6 +217,27 @@ const CreatorDetail = () => {
   const igUrl = buildPlatformUrl('instagram', igHandle);
   const ttUrl = buildPlatformUrl('tiktok', ttHandle);
   const ytUrl = buildPlatformUrl('youtube', ytHandle);
+
+  // other_platforms をパース (X等を含む)
+  const parseOtherPlatforms = (): Array<{platform: string; url: string}> => {
+    if (!submission.other_platforms) return [];
+    try {
+      if (typeof submission.other_platforms === 'string') {
+        return JSON.parse(submission.other_platforms);
+      }
+      if (Array.isArray(submission.other_platforms)) {
+        return submission.other_platforms;
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  };
+  const otherPlatforms = parseOtherPlatforms();
+  const xAccount = otherPlatforms.find(p => p.platform === 'X');
+  const xHandle = xAccount?.url || null;
+  const xUrl = buildPlatformUrl('x', xHandle);
+  const otherNonXPlatforms = otherPlatforms.filter(p => p.platform !== 'X');
 
   return (
     <div className="space-y-6">
@@ -367,7 +383,6 @@ const CreatorDetail = () => {
                       <p className="text-sm">@{igHandle.replace(/^@/, '')}</p>
                     )
                   )}
-                  {igFollowers && igFollowers > 0 && <p className="text-sm text-muted-foreground mt-1">{igFollowers.toLocaleString()} フォロワー</p>}
                 </div>
               )}
               {hasSnsData(submission.tiktok) && (
@@ -386,7 +401,6 @@ const CreatorDetail = () => {
                       <p className="text-sm">@{ttHandle.replace(/^@/, '')}</p>
                     )
                   )}
-                  {ttFollowers && ttFollowers > 0 && <p className="text-sm text-muted-foreground mt-1">{ttFollowers.toLocaleString()} フォロワー</p>}
                 </div>
               )}
               {hasSnsData(submission.youtube) && (
@@ -405,7 +419,6 @@ const CreatorDetail = () => {
                       <p className="text-sm break-all">{ytHandle}</p>
                     )
                   )}
-                  {ytSubs && ytSubs > 0 && <p className="text-sm text-muted-foreground mt-1">{ytSubs.toLocaleString()} 登録者</p>}
                 </div>
               )}
               {hasSnsData(submission.red) && (
@@ -415,16 +428,37 @@ const CreatorDetail = () => {
                     <span className="font-medium">RED</span>
                   </div>
                   {redHandle && <p className="text-sm">{redHandle}</p>}
-                  {redFollowers && redFollowers > 0 && <p className="text-sm text-muted-foreground mt-1">{redFollowers.toLocaleString()} フォロワー</p>}
                 </div>
               )}
-              {submission.other_platforms && (
+              {xHandle && (
+                <div className="p-4 border rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <SocialIconsList platforms={['X']} />
+                    <span className="font-medium">X</span>
+                  </div>
+                  {xUrl ? (
+                    <a href={xUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1">
+                      @{xHandle.replace(/^@/, '')}
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  ) : (
+                    <p className="text-sm">@{xHandle.replace(/^@/, '')}</p>
+                  )}
+                </div>
+              )}
+              {otherNonXPlatforms.length > 0 && (
                 <div className="p-4 border rounded-lg sm:col-span-2 lg:col-span-4">
                   <div className="font-medium mb-2">その他プラットフォーム</div>
-                  <p className="whitespace-pre-wrap">{submission.other_platforms}</p>
+                  <div className="space-y-2">
+                    {otherNonXPlatforms.map((p, i) => (
+                      <div key={i} className="text-sm">
+                        <span className="font-medium">{p.platform}:</span> {p.url}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
-              {!hasSnsData(submission.instagram) && !hasSnsData(submission.tiktok) && !hasSnsData(submission.youtube) && !hasSnsData(submission.red) && !submission.other_platforms && (
+              {!hasSnsData(submission.instagram) && !hasSnsData(submission.tiktok) && !hasSnsData(submission.youtube) && !hasSnsData(submission.red) && !xHandle && otherNonXPlatforms.length === 0 && (
                 <p className="text-muted-foreground col-span-full">SNSアカウント情報がありません</p>
               )}
             </div>
