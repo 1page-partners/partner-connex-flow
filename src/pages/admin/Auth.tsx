@@ -19,11 +19,28 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const allowedDomains = ['@k9-base.com', '@markon.co.jp', '@1page.partners'];
+
+  const isEmailAllowed = (email: string) => {
+    return allowedDomains.some(domain => email.toLowerCase().endsWith(domain));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // 新規登録時のみドメイン制限をチェック
+      if (!isLogin && !isEmailAllowed(email)) {
+        toast({
+          title: '登録エラー',
+          description: '許可されていないメールドメインです。@k9-base.com、@markon.co.jp、@1page.partners のいずれかのメールアドレスをご使用ください。',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
       if (isLogin) {
         const { error } = await signIn(email, password);
         if (error) {
