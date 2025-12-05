@@ -313,7 +313,7 @@ const NewCampaignEnhanced = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium flex items-center gap-2">
-                    参加許諾フロー付きURL（NDA同意→案件詳細→情報提出）
+                    可否確認用URL（NDA同意→案件詳細→情報提出）
                   </Label>
                   <div className="flex gap-2">
                     <Input value={urlWithConsent} readOnly className="font-mono text-sm" />
