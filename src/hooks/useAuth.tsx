@@ -90,8 +90,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setRole(null);
+    try {
+      // ローカルストレージをクリアしてからサインアウト
+      setUser(null);
+      setSession(null);
+      setRole(null);
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // エラーが発生してもローカル状態はクリア済み
+    }
   };
 
   return (

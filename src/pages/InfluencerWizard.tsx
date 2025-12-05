@@ -24,6 +24,15 @@ interface CampaignDisplay {
   status: 'open' | 'closed';
   contactEmail?: string;
   createdAt: string;
+  clientName?: string;
+  isTH?: boolean;
+  isVideoProductionOnly?: boolean;
+  secondaryUsage?: { hasUsage: boolean; duration?: string; purpose?: string };
+  hasAdvertisementAppearance?: boolean;
+  plannedPostDate?: string;
+  platformDeliverables?: Record<string, string[]>;
+  imageMaterials?: string[];
+  attachments?: string[];
 }
 
 const InfluencerWizard = () => {
@@ -54,10 +63,21 @@ const InfluencerWizard = () => {
           title: foundCampaign.title,
           slug: foundCampaign.slug,
           summary: foundCampaign.summary || '',
+          requirements: foundCampaign.requirements || undefined,
           platforms: foundCampaign.platforms || [],
           deadline: foundCampaign.deadline,
+          restrictions: foundCampaign.restrictions || undefined,
           status: foundCampaign.status as 'open' | 'closed',
           createdAt: foundCampaign.created_at,
+          clientName: foundCampaign.client_name || undefined,
+          isTH: foundCampaign.is_th || false,
+          isVideoProductionOnly: foundCampaign.is_video_production_only || false,
+          secondaryUsage: foundCampaign.secondary_usage as CampaignDisplay['secondaryUsage'],
+          hasAdvertisementAppearance: foundCampaign.has_advertisement_appearance || false,
+          plannedPostDate: foundCampaign.planned_post_date || undefined,
+          platformDeliverables: foundCampaign.platform_deliverables as Record<string, string[]>,
+          imageMaterials: foundCampaign.image_materials || [],
+          attachments: foundCampaign.attachments || [],
         };
 
         setCampaign(displayCampaign);

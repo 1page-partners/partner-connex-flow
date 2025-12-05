@@ -10,7 +10,9 @@ interface CampaignDetailCardProps {
 
 // ファイルタイプを判定するヘルパー関数
 const getFileType = (url: string): 'image' | 'video' | 'pdf' | 'other' => {
-  const extension = url.split('.').pop()?.toLowerCase() || '';
+  // URLからクエリパラメータを除去してから拡張子を取得
+  const urlWithoutQuery = url.split('?')[0];
+  const extension = urlWithoutQuery.split('.').pop()?.toLowerCase() || '';
   if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
   if (['mp4', 'mov', 'avi', 'webm'].includes(extension)) return 'video';
   if (extension === 'pdf') return 'pdf';
