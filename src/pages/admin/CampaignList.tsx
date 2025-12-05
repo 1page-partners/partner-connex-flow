@@ -48,7 +48,7 @@ const CampaignList = () => {
   const copyConsentUrl = (slug: string, campaignTitle: string) => {
     const url = `${window.location.origin}/i/${slug}`;
     navigator.clipboard.writeText(url);
-    toast({ title: '許諾取得用URLをコピーしました', description: `${campaignTitle}` });
+    toast({ title: '可否確認用URLをコピーしました', description: `${campaignTitle}` });
   };
 
   const copyDetailOnlyUrl = (slug: string, campaignTitle: string) => {
@@ -107,7 +107,7 @@ const CampaignList = () => {
             <Link to={`/admin/campaign/${campaign.id}`}><Eye className="h-4 w-4 mr-1" />詳細</Link>
           </Button>
           <Button variant="outline" size="sm" onClick={() => copyConsentUrl(campaign.slug, campaign.title)}>
-            <Copy className="h-4 w-4 mr-1" />許諾取得用URLコピー
+            <Copy className="h-4 w-4 mr-1" />可否確認用URLコピー
           </Button>
           <Button variant="outline" size="sm" onClick={() => copyDetailOnlyUrl(campaign.slug, campaign.title)}>
             <Link2 className="h-4 w-4 mr-1" />詳細配布用URLコピー
