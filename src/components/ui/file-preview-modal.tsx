@@ -86,31 +86,33 @@ const FilePreviewModal = ({ isOpen, onClose, fileUrl, fileType, fileName }: File
           )}
 
           {fileType === 'pdf' && (
-            <div className="w-full h-full flex flex-col">
-              <iframe 
-                src={`${fileUrl}#toolbar=0&navpanes=0&page=${pdfPage}`}
-                className="flex-1 w-full border-0"
-                title={fileName || 'PDFプレビュー'}
-              />
-              <div className="flex items-center justify-center gap-4 p-3 bg-muted/90">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setPdfPage(prev => Math.max(prev - 1, 1))}
-                  disabled={pdfPage <= 1}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  前のページ
-                </Button>
-                <span className="text-sm">ページ {pdfPage}</span>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setPdfPage(prev => prev + 1)}
-                >
-                  次のページ
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
+            <div className="w-full h-full flex items-center justify-center p-4">
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col" style={{ width: '650px', maxWidth: '90vw', height: '85vh', maxHeight: '800px' }}>
+                <iframe 
+                  src={`${fileUrl}#toolbar=0&navpanes=0&page=${pdfPage}`}
+                  className="flex-1 w-full border-0"
+                  title={fileName || 'PDFプレビュー'}
+                />
+                <div className="flex items-center justify-center gap-4 p-3 bg-muted border-t">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setPdfPage(prev => Math.max(prev - 1, 1))}
+                    disabled={pdfPage <= 1}
+                  >
+                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    前のページ
+                  </Button>
+                  <span className="text-sm text-foreground">ページ {pdfPage}</span>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setPdfPage(prev => prev + 1)}
+                  >
+                    次のページ
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
               </div>
             </div>
           )}
