@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { SocialIcon } from "@/components/SocialIcons";
 import { Loader2, Calendar, AlertCircle, Image, File, FileText, Play, Maximize2 } from "lucide-react";
 import FilePreviewModal from "@/components/ui/file-preview-modal";
+import PdfThumbnail from "@/components/ui/pdf-thumbnail";
 
 // ファイルタイプを判定するヘルパー関数
 const getFileType = (url: string): 'image' | 'video' | 'pdf' | 'other' => {
@@ -295,9 +296,7 @@ const CampaignDetailOnly = () => {
                           </div>
                         ) : fileType === 'pdf' ? (
                           <div className="relative">
-                            <div className="w-full h-[200px] bg-muted flex items-center justify-center">
-                              <FileText className="w-12 h-12 text-muted-foreground" />
-                            </div>
+                            <PdfThumbnail url={attachmentUrl} className="w-full h-[200px]" />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                               <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded">クリックして表示</span>
                             </div>
