@@ -76,6 +76,15 @@ export const campaignApi = {
     
     if (error) throw error;
     return data;
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('campaigns')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
   }
 };
 

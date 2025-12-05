@@ -6,9 +6,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { campaignApi, Campaign } from '@/lib/api';
-import { Plus, Search, Calendar, Copy, ExternalLink, Eye, Filter, Loader2, FileText, Link2 } from 'lucide-react';
+import { Plus, Search, Calendar, Copy, ExternalLink, Eye, Filter, Loader2, FileText, Link2, Trash2 } from 'lucide-react';
 import { SocialIconsList } from '@/components/SocialIcons';
 
 const platformOptions = [
@@ -24,7 +26,9 @@ const CampaignList = () => {
   const [loading, setLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState('all');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { toast } = useToast();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -51,6 +55,20 @@ const CampaignList = () => {
     const url = `${window.location.origin}/c/${slug}`;
     navigator.clipboard.writeText(url);
     toast({ title: '詳細のみ配布用URLをコピーしました', description: `${campaignTitle}` });
+  };
+
+  const handleDelete = async (id: string, title: string) => {
+    setDeletingId(id);
+    try {
+      await campaignApi.delete(id);
+      setCampaigns(prev => prev.filter(c => c.id !== id));
+      toast({ title: '案件を削除しました', description: title });
+    } catch (error) {
+      console.error('削除エラー:', error);
+      toast({ title: 'エラー', description: '案件の削除に失敗しました', variant: 'destructive' });
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -97,6 +115,30 @@ const CampaignList = () => {
           <Button variant="outline" size="sm" asChild>
             <Link to={`/i/${campaign.slug}`} target="_blank"><ExternalLink className="h-4 w-4 mr-1" />プレビュー</Link>
           </Button>
+          {isAdmin && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" disabled={deletingId === campaign.id}>
+                  {deletingId === campaign.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                  削除
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>案件を削除しますか？</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    「{campaign.title}」を削除します。この操作は取り消せません。関連する応募データも削除される可能性があります。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => handleDelete(campaign.id, campaign.title)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    削除する
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </CardContent>
     </Card>
