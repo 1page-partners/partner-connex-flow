@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 interface HeaderProps {
   showStepper?: boolean;
@@ -13,8 +14,8 @@ const Header = ({ showStepper = false, currentStep = 1, totalSteps = 4 }: Header
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Link to="/" className="text-xl font-bold text-primary hover:text-primary/80 transition-colors">
-              TalentConnect
+            <Link to="/" className="hover:opacity-80 transition-opacity">
+              <img src={logo} alt="TalentConnect" className="h-6 object-contain" />
             </Link>
           </div>
           

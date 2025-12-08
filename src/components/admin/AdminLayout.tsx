@@ -3,6 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import logo from '@/assets/logo.png';
 import { 
   LayoutDashboard, 
   PlusCircle, 
@@ -61,7 +62,7 @@ function AdminSidebar() {
       <div className="p-4 border-b">
         {!collapsed && (
           <div className="space-y-1">
-            <h1 className="text-lg font-bold text-foreground">TalentConnect</h1>
+            <img src={logo} alt="TalentConnect" className="h-6 object-contain object-left" />
             <div className="flex items-center gap-2">
               <Badge variant={isAdmin ? 'default' : 'secondary'} className="text-xs">
                 {isAdmin ? (
