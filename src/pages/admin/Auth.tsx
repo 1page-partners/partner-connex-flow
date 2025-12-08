@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock } from 'lucide-react';
+import logo from '@/assets/logo.png';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -84,7 +85,7 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">TalentConnect</CardTitle>
+          <img src={logo} alt="TalentConnect" className="h-8 mx-auto object-contain" />
           <CardDescription>
             {isLogin ? '管理画面にログイン' : '新規アカウント登録'}
           </CardDescription>

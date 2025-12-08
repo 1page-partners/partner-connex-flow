@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Plus, List, Users, ArrowRight, LayoutDashboard } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Index = () => {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">TalentConnect</h1>
+        <img src={logo} alt="TalentConnect" className="h-10 mx-auto object-contain" />
         <p className="text-muted-foreground">インフルエンサー案件管理ツール</p>
       </div>
 
