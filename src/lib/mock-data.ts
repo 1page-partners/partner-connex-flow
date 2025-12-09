@@ -31,6 +31,11 @@ export interface Campaign {
   hasAdvertisementAppearance?: boolean;
   plannedPostDate?: string;
   attachments?: string[];
+  // 納品物条件フィールド
+  shootingOnly?: boolean;
+  editingOnly?: boolean;
+  shootingAndEditing?: boolean;
+  tieupPostProduction?: boolean;
 }
 
 export interface Creator {

@@ -34,6 +34,11 @@ interface CampaignDisplay {
   platformDeliverables?: Record<string, string[]>;
   imageMaterials?: string[];
   attachments?: string[];
+  // 納品物条件
+  shootingOnly?: boolean;
+  editingOnly?: boolean;
+  shootingAndEditing?: boolean;
+  tieupPostProduction?: boolean;
 }
 
 const InfluencerWizard = () => {
@@ -83,6 +88,11 @@ const InfluencerWizard = () => {
           platformDeliverables: foundCampaign.deliverables as Record<string, string[]>,
           imageMaterials: foundCampaign.image_materials || [],
           attachments: foundCampaign.attachments || [],
+          // 納品物条件
+          shootingOnly: foundCampaign.shooting_only || false,
+          editingOnly: foundCampaign.editing_only || false,
+          shootingAndEditing: foundCampaign.shooting_and_editing || false,
+          tieupPostProduction: foundCampaign.tieup_post_production || false,
         };
 
         setCampaign(displayCampaign);

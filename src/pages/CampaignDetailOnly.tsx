@@ -167,14 +167,29 @@ const CampaignDetailOnly = () => {
               </div>
             )}
 
-            {/* 契約条件 */}
+            {/* 納品物条件 */}
             <div className="space-y-2">
-              {campaign.video_production_only && (
-                <Badge variant="outline">納品動画の制作のみ</Badge>
-              )}
-              {campaign.ad_appearance && (
-                <Badge variant="outline">広告出演あり</Badge>
-              )}
+              <h3 className="font-semibold mb-2">納品物条件</h3>
+              <div className="flex flex-wrap gap-2">
+                {campaign.shooting_only && (
+                  <Badge variant="outline">撮影のみ</Badge>
+                )}
+                {campaign.editing_only && (
+                  <Badge variant="outline">編集のみ</Badge>
+                )}
+                {campaign.shooting_and_editing && (
+                  <Badge variant="outline">撮影＆編集の制作のみ</Badge>
+                )}
+                {campaign.tieup_post_production && (
+                  <Badge variant="outline">タイアップ投稿の制作</Badge>
+                )}
+                {campaign.video_production_only && (
+                  <Badge variant="outline">納品動画の制作のみ</Badge>
+                )}
+                {campaign.ad_appearance && (
+                  <Badge variant="outline">広告出演あり</Badge>
+                )}
+              </div>
               {secondaryUsage?.hasUsage && (
                 <div className="text-sm">
                   <span className="font-medium">二次利用:</span>{' '}
