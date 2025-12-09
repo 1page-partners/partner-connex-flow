@@ -117,11 +117,11 @@ const EditCampaign = () => {
         // Populate form fields
         setClientName(campaign.client_name || "");
         setTitle(campaign.title || "");
-        setSummary(campaign.description || "");
+        setSummary(campaign.summary || "");
         setRequirements("");
         setIsTH(false);
         setImageMaterials(campaign.image_materials || []);
-        setSelectedPlatforms(campaign.target_platforms || []);
+        setSelectedPlatforms(campaign.platforms || []);
         
         // Parse platform deliverables
         const deliverables = campaign.deliverables as Record<string, string[]> | null;
@@ -129,16 +129,17 @@ const EditCampaign = () => {
         
         setDeadline(campaign.deadline || "");
         setPlannedPostDate(campaign.posting_date || "");
-        setRestrictions(campaign.ng_items || "");
+        setRestrictions(campaign.restrictions || "");
         setNdaTemplate((campaign.nda_template as 'PlanC' | 'MARKON' | 'custom') || 'PlanC');
         setNdaUrl(campaign.nda_url || "");
         setIsVideoProductionOnly(campaign.video_production_only || false);
         
-        // Parse secondary usage
-        if (campaign.secondary_usage) {
+        // Parse secondary usage (now a jsonb object)
+        const secondaryUsageData = campaign.secondary_usage as { hasUsage?: boolean; duration?: string; purpose?: string } | null;
+        if (secondaryUsageData?.hasUsage) {
           setHasSecondaryUsage(true);
-          setSecondaryUsageDuration(campaign.secondary_usage_period || "");
-          setSecondaryUsagePurpose(campaign.secondary_usage_purpose || "");
+          setSecondaryUsageDuration(secondaryUsageData.duration || "");
+          setSecondaryUsagePurpose(secondaryUsageData.purpose || "");
         }
         
         setHasAdvertisementAppearance(campaign.ad_appearance || false);
@@ -226,11 +227,11 @@ const EditCampaign = () => {
       const campaignData = {
         client_name: clientName.trim(),
         title: title.trim(),
-        description: summary.trim(),
-        target_platforms: selectedPlatforms,
+        summary: summary.trim(),
+        platforms: selectedPlatforms,
         deadline: deadline || null,
         posting_date: plannedPostDate || null,
-        ng_items: restrictions.trim() || null,
+        restrictions: restrictions.trim() || null,
         nda_url: ndaTemplate === 'custom' ? ndaUrl.trim() : null,
         nda_template: ndaTemplate,
         status,
@@ -238,9 +239,9 @@ const EditCampaign = () => {
         image_materials: imageMaterials.length > 0 ? imageMaterials : null,
         deliverables: platformDeliverableMap,
         video_production_only: isVideoProductionOnly,
-        secondary_usage: hasSecondaryUsage,
-        secondary_usage_period: hasSecondaryUsage ? secondaryUsageDuration : null,
-        secondary_usage_purpose: hasSecondaryUsage ? secondaryUsagePurpose.trim() : null,
+        secondary_usage: hasSecondaryUsage
+          ? { hasUsage: true, duration: secondaryUsageDuration, purpose: secondaryUsagePurpose.trim() }
+          : null,
         ad_appearance: hasAdvertisementAppearance,
         attachments: attachments.length > 0 ? attachments : null,
         shooting_only: shootingOnly,

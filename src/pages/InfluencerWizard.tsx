@@ -66,25 +66,28 @@ const InfluencerWizard = () => {
         }
 
         // API結果をUIで使える形式に変換
+        // secondary_usageはjsonb型なので適切にパース
+        const secondaryUsageData = foundCampaign.secondary_usage as { hasUsage?: boolean; duration?: string; purpose?: string } | null;
+        
         const displayCampaign: CampaignDisplay = {
           id: foundCampaign.id,
           title: foundCampaign.title,
           slug: foundCampaign.slug,
-          summary: foundCampaign.description || '',
-          requirements: undefined,
-          platforms: foundCampaign.target_platforms || [],
-          deadline: foundCampaign.posting_date || '',
-          restrictions: foundCampaign.ng_items || undefined,
+          summary: foundCampaign.summary || '',
+          requirements: foundCampaign.requirements || undefined,
+          platforms: foundCampaign.platforms || [],
+          deadline: foundCampaign.deadline || '',
+          restrictions: foundCampaign.restrictions || undefined,
           status: (foundCampaign.status as 'open' | 'closed') || 'open',
           createdAt: foundCampaign.created_at,
           clientName: foundCampaign.client_name || undefined,
-          isTH: false,
+          isTH: foundCampaign.is_th === true,
           isVideoProductionOnly: foundCampaign.video_production_only === true,
-          secondaryUsage: foundCampaign.secondary_usage === true
-            ? { hasUsage: true, duration: foundCampaign.secondary_usage_period || undefined, purpose: foundCampaign.secondary_usage_purpose || undefined }
+          secondaryUsage: secondaryUsageData?.hasUsage
+            ? { hasUsage: true, duration: secondaryUsageData.duration, purpose: secondaryUsageData.purpose }
             : { hasUsage: false },
           hasAdvertisementAppearance: foundCampaign.ad_appearance === true,
-          plannedPostDate: foundCampaign.posting_date || undefined,
+          plannedPostDate: foundCampaign.planned_post_date || undefined,
           platformDeliverables: (foundCampaign.deliverables && typeof foundCampaign.deliverables === 'object') 
             ? foundCampaign.deliverables as Record<string, string[]>
             : undefined,

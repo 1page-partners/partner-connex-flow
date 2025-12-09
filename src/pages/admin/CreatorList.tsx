@@ -164,11 +164,15 @@ const CreatorListPage = () => {
 
   const getPlatforms = (submission: SubmissionWithCampaign): string[] => {
     const platforms: string[] = [];
-    if (submission?.instagram) platforms.push('Instagram');
-    if (submission?.tiktok) platforms.push('TikTok');
-    if (submission?.youtube) platforms.push('YouTube');
-    if (submission?.red) platforms.push('RED');
-    if (submission?.x_twitter) platforms.push('X');
+    const hasSnsData = (data: any): boolean => {
+      if (!data || typeof data !== 'object') return false;
+      const url = data.url || data.handle || data.account_url;
+      return !!url;
+    };
+    if (hasSnsData(submission?.instagram)) platforms.push('Instagram');
+    if (hasSnsData(submission?.tiktok)) platforms.push('TikTok');
+    if (hasSnsData(submission?.youtube)) platforms.push('YouTube');
+    if (hasSnsData(submission?.red)) platforms.push('RED');
     // other_sns から他のプラットフォームを取得
     if (submission?.other_sns) {
       try {
@@ -191,7 +195,7 @@ const CreatorListPage = () => {
     if (debouncedKeyword) {
       const keyword = debouncedKeyword.toLowerCase();
       filtered = filtered.filter(s => 
-        s.name.toLowerCase().includes(keyword) ||
+        s.influencer_name.toLowerCase().includes(keyword) ||
         s.email?.toLowerCase().includes(keyword) ||
         s.campaign_title.toLowerCase().includes(keyword)
       );
@@ -225,7 +229,7 @@ const CreatorListPage = () => {
     return (
       <div className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
         <Link to={`/admin/creator/${submission.id}`} className="font-medium hover:text-primary transition-colors truncate min-w-[120px] max-w-[180px]">
-          {submission.name}
+          {submission.influencer_name}
         </Link>
         
         <div className="flex items-center gap-1.5 shrink-0">
@@ -388,7 +392,7 @@ const CreatorListPage = () => {
                   {availableForCurrentList.slice(0, 6).map(submission => (
                     <div key={submission.id} className="flex items-center justify-between p-2 border rounded-lg bg-muted/30">
                       <Link to={`/admin/creator/${submission.id}`} className="text-sm font-medium hover:text-primary truncate flex-1">
-                        {submission.name}
+                        {submission.influencer_name}
                       </Link>
                       <Button variant="ghost" size="sm" onClick={() => handleAddToCurrentList(submission.id)}>
                         <ListPlus className="h-4 w-4" />

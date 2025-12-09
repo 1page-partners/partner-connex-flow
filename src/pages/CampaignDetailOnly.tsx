@@ -96,12 +96,13 @@ const CampaignDetailOnly = () => {
     });
   };
 
-  const platforms = campaign.target_platforms || [];
+  const platforms = campaign.platforms || [];
   const platformDeliverables = (campaign.deliverables && typeof campaign.deliverables === 'object') 
     ? campaign.deliverables as Record<string, string[]> 
     : null;
-  const secondaryUsage = campaign.secondary_usage === true
-    ? { hasUsage: true, duration: campaign.secondary_usage_period || undefined, purpose: campaign.secondary_usage_purpose || undefined }
+  const secondaryUsageData = campaign.secondary_usage as { hasUsage?: boolean; duration?: string; purpose?: string } | null;
+  const secondaryUsage = secondaryUsageData?.hasUsage
+    ? { hasUsage: true, duration: secondaryUsageData.duration, purpose: secondaryUsageData.purpose }
     : null;
 
   return (
@@ -129,7 +130,7 @@ const CampaignDetailOnly = () => {
             {/* 概要 */}
             <div>
               <h3 className="font-semibold mb-2">概要</h3>
-              <p className="text-muted-foreground whitespace-pre-wrap">{campaign.description}</p>
+              <p className="text-muted-foreground whitespace-pre-wrap">{campaign.summary}</p>
             </div>
 
             {/* 想定媒体 */}
@@ -218,10 +219,10 @@ const CampaignDetailOnly = () => {
             </div>
 
             {/* NG事項 */}
-            {campaign.ng_items && (
+            {campaign.restrictions && (
               <div>
                 <h3 className="font-semibold mb-2 text-destructive">NG事項・制約</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{campaign.ng_items}</p>
+                <p className="text-muted-foreground whitespace-pre-wrap">{campaign.restrictions}</p>
               </div>
             )}
 
