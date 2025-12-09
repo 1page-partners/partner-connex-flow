@@ -37,7 +37,7 @@ export const campaignApi = {
   async getBySlug(slug: string): Promise<Campaign | null> {
     // 公開用Edge Functionを使用（機密フィールドを除外）
     const response = await fetch(
-      `https://durcilecgrrsudnyaynq.supabase.co/functions/v1/get-public-campaign?slug=${encodeURIComponent(slug)}`,
+      `https://vpkhrrbfdfgmbrzuwspg.supabase.co/functions/v1/get-public-campaign?slug=${encodeURIComponent(slug)}`,
       {
         method: 'GET',
         headers: {
@@ -182,7 +182,7 @@ export interface CreatorListItem {
   id: string;
   list_id: string;
   submission_id: string;
-  created_at: string;
+  added_at: string;
 }
 
 // クリエイターリスト関連のAPI

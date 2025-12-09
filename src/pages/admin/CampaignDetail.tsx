@@ -80,17 +80,23 @@ const CampaignDetail = () => {
     return data[key] ?? null;
   };
 
+  // SNS JsonデータからURLを取得するヘルパー
+  const getSnsUrl = (data: any): string | null => {
+    if (!data || typeof data !== 'object') return null;
+    return data.url || data.handle || null;
+  };
+
   const exportToCSV = () => {
     if (submissions.length === 0) { toast({ title: 'エクスポートできません', variant: 'destructive' }); return; }
     const headers = ['名前', 'メール', '電話番号', 'Instagram', 'TikTok', 'YouTube', '応募日'];
     const rows = submissions.map(s => [
-      s.name, 
+      s.influencer_name, 
       s.email || '', 
       s.phone || '', 
-      s.instagram || '', 
-      s.tiktok || '', 
-      s.youtube || '', 
-      formatDate(s.created_at)
+      getSnsUrl(s.instagram) || '', 
+      getSnsUrl(s.tiktok) || '', 
+      getSnsUrl(s.youtube) || '', 
+      formatDate(s.submitted_at)
     ]);
     const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -146,7 +152,7 @@ const CampaignDetail = () => {
               </div>
               <div>
                 <div className="text-sm font-medium text-muted-foreground mb-1">案件概要</div>
-                <p className="whitespace-pre-wrap">{campaign.description || '未設定'}</p>
+                <p className="whitespace-pre-wrap">{campaign.summary || '未設定'}</p>
               </div>
             </CardContent>
           </Card>
@@ -157,7 +163,7 @@ const CampaignDetail = () => {
             <CardContent className="space-y-4">
               <div>
                 <div className="text-sm font-medium text-muted-foreground mb-1">想定媒体</div>
-                <SocialIconsList platforms={campaign.target_platforms || []} />
+                <SocialIconsList platforms={campaign.platforms || []} />
               </div>
               {campaign.deliverables && typeof campaign.deliverables === 'object' && Object.keys(campaign.deliverables).length > 0 && (
                 <div>
@@ -212,19 +218,23 @@ const CampaignDetail = () => {
               {/* 二次利用 */}
               <div>
                 <div className="text-sm font-medium text-muted-foreground mb-1">二次利用</div>
-                {campaign.secondary_usage === true ? (
-                  <div className="space-y-1">
-                    <Badge>あり</Badge>
-                    {campaign.secondary_usage_period && (
-                      <p className="text-sm mt-1">期間: {campaign.secondary_usage_period}</p>
-                    )}
-                    {campaign.secondary_usage_purpose && (
-                      <p className="text-sm">用途: {campaign.secondary_usage_purpose}</p>
-                    )}
-                  </div>
-                ) : (
-                  <Badge variant="outline">なし</Badge>
-                )}
+                {(() => {
+                  const secondaryUsageData = campaign.secondary_usage as { hasUsage?: boolean; duration?: string; purpose?: string } | null;
+                  if (secondaryUsageData?.hasUsage) {
+                    return (
+                      <div className="space-y-1">
+                        <Badge>あり</Badge>
+                        {secondaryUsageData.duration && (
+                          <p className="text-sm mt-1">期間: {secondaryUsageData.duration}</p>
+                        )}
+                        {secondaryUsageData.purpose && (
+                          <p className="text-sm">用途: {secondaryUsageData.purpose}</p>
+                        )}
+                      </div>
+                    );
+                  }
+                  return <Badge variant="outline">なし</Badge>;
+                })()}
               </div>
 
               {/* 広告出演 */}
@@ -238,11 +248,11 @@ const CampaignDetail = () => {
           </Card>
 
           {/* NG事項・制約 */}
-          {campaign.ng_items && (
+          {campaign.restrictions && (
             <Card>
               <CardHeader><CardTitle>NG事項・制約</CardTitle></CardHeader>
               <CardContent>
-                <p className="whitespace-pre-wrap">{campaign.ng_items}</p>
+                <p className="whitespace-pre-wrap">{campaign.restrictions}</p>
               </CardContent>
             </Card>
           )}
@@ -387,8 +397,11 @@ const CampaignDetail = () => {
         <TabsContent value="submissions" className="mt-4">
           <Card><CardHeader><div className="flex items-center justify-between flex-wrap gap-2"><CardTitle>応募者一覧</CardTitle><Button variant="outline" size="sm" onClick={exportToCSV}><Download className="h-4 w-4 mr-2" />CSV</Button></div></CardHeader><CardContent>
             {submissions.length === 0 ? <div className="text-center py-8"><Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" /><p className="text-muted-foreground">応募者はまだいません</p></div> : <div className="space-y-4">{submissions.map(s => {
+              const igUrl = getSnsUrl(s.instagram);
+              const ttUrl = getSnsUrl(s.tiktok);
+              const ytUrl = getSnsUrl(s.youtube);
               return (
-                <Card key={s.id}><CardContent className="p-4"><div className="flex flex-col sm:flex-row justify-between items-start gap-2"><div className="space-y-2"><h3 className="font-semibold">{s.name}</h3><div className="flex flex-col gap-1 text-sm text-muted-foreground"><div className="flex items-center gap-2"><Mail className="h-4 w-4" />{s.email}</div>{s.phone && <div className="flex items-center gap-2"><Phone className="h-4 w-4" />{s.phone}</div>}</div><div className="flex flex-wrap gap-2 text-sm">{s.instagram && <Badge variant="outline">IG: {s.instagram}</Badge>}{s.tiktok && <Badge variant="outline">TT: {s.tiktok}</Badge>}{s.youtube && <Badge variant="outline">YT: {s.youtube}</Badge>}</div></div><div className="text-sm text-muted-foreground">{formatDate(s.created_at)}</div></div></CardContent></Card>
+                <Card key={s.id}><CardContent className="p-4"><div className="flex flex-col sm:flex-row justify-between items-start gap-2"><div className="space-y-2"><h3 className="font-semibold">{s.influencer_name}</h3><div className="flex flex-col gap-1 text-sm text-muted-foreground"><div className="flex items-center gap-2"><Mail className="h-4 w-4" />{s.email}</div>{s.phone && <div className="flex items-center gap-2"><Phone className="h-4 w-4" />{s.phone}</div>}</div><div className="flex flex-wrap gap-2 text-sm">{igUrl && <Badge variant="outline">IG: {igUrl}</Badge>}{ttUrl && <Badge variant="outline">TT: {ttUrl}</Badge>}{ytUrl && <Badge variant="outline">YT: {ytUrl}</Badge>}</div></div><div className="text-sm text-muted-foreground">{formatDate(s.submitted_at)}</div></div></CardContent></Card>
               );
             })}</div>}
           </CardContent></Card>

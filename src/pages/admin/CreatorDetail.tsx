@@ -52,8 +52,8 @@ const CreatorDetail = () => {
       const { data: allSubs } = await supabase
         .from('influencer_submissions')
         .select('*')
-        .eq('name', subData.name)
-        .order('created_at', { ascending: false });
+        .eq('influencer_name', subData.influencer_name)
+        .order('submitted_at', { ascending: false });
 
       // 各応募のキャンペーン情報を取得
       const subsWithCampaigns: SubmissionWithCampaign[] = [];
@@ -244,16 +244,19 @@ const CreatorDetail = () => {
     );
   }
 
-  const igHandle = submission.instagram;
-  const ttHandle = submission.tiktok;
-  const ytHandle = submission.youtube;
-  const redHandle = submission.red;
-  const xHandle = submission.x_twitter;
+  const getSnsHandle = (data: any): string | null => {
+    if (!data || typeof data !== 'object') return null;
+    return data.url || data.handle || null;
+  };
+
+  const igHandle = getSnsHandle(submission.instagram);
+  const ttHandle = getSnsHandle(submission.tiktok);
+  const ytHandle = getSnsHandle(submission.youtube);
+  const redHandle = getSnsHandle(submission.red);
 
   const igUrl = buildPlatformUrl('instagram', igHandle);
   const ttUrl = buildPlatformUrl('tiktok', ttHandle);
   const ytUrl = buildPlatformUrl('youtube', ytHandle);
-  const xUrl = buildPlatformUrl('x', xHandle);
 
   // other_sns をパース
   const parseOtherPlatforms = (): Array<{platform: string; url: string}> => {
@@ -278,8 +281,8 @@ const CreatorDetail = () => {
             <Link to="/admin/creators"><ArrowLeft className="h-4 w-4" /></Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">{submission.name}</h1>
-            <p className="text-muted-foreground">応募日: {formatDate(submission.created_at)}</p>
+            <h1 className="text-2xl font-bold">{submission.influencer_name}</h1>
+            <p className="text-muted-foreground">応募日: {formatDate(submission.submitted_at)}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -311,9 +314,9 @@ const CreatorDetail = () => {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>クリエイター情報を削除</DialogTitle>
-                <DialogDescription>
-                  「{submission.name}」の情報を削除します。この操作は取り消せません。
-                </DialogDescription>
+              <DialogDescription>
+                「{submission.influencer_name}」の情報を削除します。この操作は取り消せません。
+              </DialogDescription>
               </DialogHeader>
               <DialogFooter className="gap-2 sm:gap-0">
                 <DialogClose asChild>
@@ -336,7 +339,7 @@ const CreatorDetail = () => {
           <CardContent className="space-y-4">
             <div>
               <div className="text-sm font-medium text-muted-foreground mb-1">名前</div>
-              <p>{submission.name}</p>
+              <p>{submission.influencer_name}</p>
             </div>
             {submission.email && (
               <div>
@@ -401,8 +404,8 @@ const CreatorDetail = () => {
                       {sub.campaign?.client_name || '-'}
                     </div>
                     <div className="flex items-center gap-1 hidden md:flex">
-                      {sub.campaign?.target_platforms && sub.campaign.target_platforms.length > 0 && (
-                        <SocialIconsList platforms={sub.campaign.target_platforms} />
+                      {sub.campaign?.platforms && sub.campaign.platforms.length > 0 && (
+                        <SocialIconsList platforms={sub.campaign.platforms} />
                       )}
                     </div>
                     {getStatusBadge(sub.status || 'pending')}
@@ -483,22 +486,6 @@ const CreatorDetail = () => {
                   {redHandle && <p className="text-sm">{redHandle}</p>}
                 </div>
               )}
-              {xHandle && (
-                <div className="p-4 border rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <SocialIconsList platforms={['X']} />
-                    <span className="font-medium">X</span>
-                  </div>
-                  {xUrl ? (
-                    <a href={xUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1">
-                      @{xHandle.replace(/^@/, '')}
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  ) : (
-                    <p className="text-sm">@{xHandle.replace(/^@/, '')}</p>
-                  )}
-                </div>
-              )}
               {otherPlatforms.length > 0 && (
                 <div className="p-4 border rounded-lg sm:col-span-2 lg:col-span-4">
                   <div className="font-medium mb-2">その他プラットフォーム</div>
@@ -511,7 +498,7 @@ const CreatorDetail = () => {
                   </div>
                 </div>
               )}
-              {!hasSnsData(submission.instagram) && !hasSnsData(submission.tiktok) && !hasSnsData(submission.youtube) && !hasSnsData(submission.red) && !xHandle && otherPlatforms.length === 0 && (
+              {!hasSnsData(submission.instagram) && !hasSnsData(submission.tiktok) && !hasSnsData(submission.youtube) && !hasSnsData(submission.red) && otherPlatforms.length === 0 && (
                 <p className="text-muted-foreground col-span-full">SNSアカウント情報がありません</p>
               )}
             </div>

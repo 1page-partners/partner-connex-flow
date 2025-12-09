@@ -76,7 +76,7 @@ const CampaignList = () => {
   const filteredCampaigns = useMemo(() => {
     return campaigns.filter(campaign => {
       const matchesKeyword = searchKeyword === '' || campaign.title.toLowerCase().includes(searchKeyword.toLowerCase());
-      const matchesPlatform = selectedPlatform === 'all' || (campaign.target_platforms || []).includes(selectedPlatform);
+      const matchesPlatform = selectedPlatform === 'all' || (campaign.platforms || []).includes(selectedPlatform);
       return matchesKeyword && matchesPlatform;
     });
   }, [campaigns, searchKeyword, selectedPlatform]);
@@ -103,7 +103,7 @@ const CampaignList = () => {
           </div>
           <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'}>{campaign.status === 'active' ? '募集中' : '終了'}</Badge>
         </div>
-        <div className="flex items-center gap-2 mb-4"><SocialIconsList platforms={campaign.target_platforms || []} /></div>
+        <div className="flex items-center gap-2 mb-4"><SocialIconsList platforms={campaign.platforms || []} /></div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link to={`/admin/campaign/${campaign.id}`}><Eye className="h-4 w-4 mr-1" />詳細</Link>
