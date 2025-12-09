@@ -298,16 +298,30 @@ const CampaignDetailCard = ({ campaign }: CampaignDetailCardProps) => {
             </div>
           )}
 
-          {/* 契約条件 */}
-          {(campaign.isVideoProductionOnly || campaign.secondaryUsage?.hasUsage || campaign.hasAdvertisementAppearance) && (
+          {/* 納品物条件 */}
+          {(campaign.shootingOnly || campaign.editingOnly || campaign.shootingAndEditing || 
+            campaign.tieupPostProduction || campaign.isVideoProductionOnly || 
+            campaign.secondaryUsage?.hasUsage || campaign.hasAdvertisementAppearance) && (
             <div>
-              <h3 className="font-medium text-foreground mb-2">契約条件</h3>
+              <h3 className="font-medium text-foreground mb-2">納品物条件</h3>
               <div className="space-y-1">
+                {campaign.shootingOnly && (
+                  <Badge variant="outline">撮影のみ</Badge>
+                )}
+                {campaign.editingOnly && (
+                  <Badge variant="outline" className="ml-1">編集のみ</Badge>
+                )}
+                {campaign.shootingAndEditing && (
+                  <Badge variant="outline" className="ml-1">撮影＆編集の制作のみ</Badge>
+                )}
+                {campaign.tieupPostProduction && (
+                  <Badge variant="outline" className="ml-1">タイアップ投稿の制作</Badge>
+                )}
                 {campaign.isVideoProductionOnly && (
-                  <Badge variant="outline">納品動画制作のみ</Badge>
+                  <Badge variant="outline" className="ml-1">納品動画制作のみ</Badge>
                 )}
                 {campaign.secondaryUsage?.hasUsage && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mt-1">
                     <Badge variant="secondary">二次利用あり</Badge>
                     <span className="text-xs text-muted-foreground">
                       ({campaign.secondaryUsage.duration} - {campaign.secondaryUsage.purpose})
@@ -315,7 +329,7 @@ const CampaignDetailCard = ({ campaign }: CampaignDetailCardProps) => {
                   </div>
                 )}
                 {campaign.hasAdvertisementAppearance && (
-                  <Badge variant="outline">広告出演あり</Badge>
+                  <Badge variant="outline" className="ml-1">広告出演あり</Badge>
                 )}
               </div>
             </div>

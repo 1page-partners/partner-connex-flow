@@ -62,6 +62,7 @@ export type Database = {
           created_at: string
           deliverables: Json | null
           description: string | null
+          editing_only: boolean | null
           id: string
           image_materials: string[] | null
           management_sheet_url: string | null
@@ -74,9 +75,12 @@ export type Database = {
           secondary_usage: boolean | null
           secondary_usage_period: string | null
           secondary_usage_purpose: string | null
+          shooting_and_editing: boolean | null
+          shooting_only: boolean | null
           slug: string
           status: string | null
           target_platforms: string[] | null
+          tieup_post_production: boolean | null
           title: string
           updated_at: string
           video_production_only: boolean | null
@@ -89,6 +93,7 @@ export type Database = {
           created_at?: string
           deliverables?: Json | null
           description?: string | null
+          editing_only?: boolean | null
           id?: string
           image_materials?: string[] | null
           management_sheet_url?: string | null
@@ -101,9 +106,12 @@ export type Database = {
           secondary_usage?: boolean | null
           secondary_usage_period?: string | null
           secondary_usage_purpose?: string | null
+          shooting_and_editing?: boolean | null
+          shooting_only?: boolean | null
           slug: string
           status?: string | null
           target_platforms?: string[] | null
+          tieup_post_production?: boolean | null
           title: string
           updated_at?: string
           video_production_only?: boolean | null
@@ -116,6 +124,7 @@ export type Database = {
           created_at?: string
           deliverables?: Json | null
           description?: string | null
+          editing_only?: boolean | null
           id?: string
           image_materials?: string[] | null
           management_sheet_url?: string | null
@@ -128,9 +137,12 @@ export type Database = {
           secondary_usage?: boolean | null
           secondary_usage_period?: string | null
           secondary_usage_purpose?: string | null
+          shooting_and_editing?: boolean | null
+          shooting_only?: boolean | null
           slug?: string
           status?: string | null
           target_platforms?: string[] | null
+          tieup_post_production?: boolean | null
           title?: string
           updated_at?: string
           video_production_only?: boolean | null

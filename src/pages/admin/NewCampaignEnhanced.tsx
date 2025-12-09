@@ -66,6 +66,11 @@ const NewCampaignEnhanced = () => {
   const [plannedPostDate, setPlannedPostDate] = useState("");
   const [attachments, setAttachments] = useState<string[]>([]);
   const [status, setStatus] = useState<'open' | 'closed'>('open');
+  // 納品物条件
+  const [shootingOnly, setShootingOnly] = useState(false);
+  const [editingOnly, setEditingOnly] = useState(false);
+  const [shootingAndEditing, setShootingAndEditing] = useState(false);
+  const [tieupPostProduction, setTieupPostProduction] = useState(false);
   const [contactEmail, setContactEmail] = useState("");
   
   // UI state
@@ -185,6 +190,10 @@ const NewCampaignEnhanced = () => {
         ad_appearance: hasAdvertisementAppearance,
         attachments: attachments.length > 0 ? attachments : [],
         requires_consent: true,
+        shooting_only: shootingOnly,
+        editing_only: editingOnly,
+        shooting_and_editing: shootingAndEditing,
+        tieup_post_production: tieupPostProduction,
       };
 
       const newCampaign = await campaignApi.create(campaignData);
@@ -285,6 +294,10 @@ const NewCampaignEnhanced = () => {
     plannedPostDate,
     attachments,
     requiresConsent: true,
+    shootingOnly,
+    editingOnly,
+    shootingAndEditing,
+    tieupPostProduction,
   };
 
   // 作成完了ダイアログ
@@ -634,79 +647,120 @@ const NewCampaignEnhanced = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            </CardContent>
+          </Card>
 
+          {/* 納品物条件 */}
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle>納品物条件</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="shooting-only"
+                  checked={shootingOnly}
+                  onCheckedChange={(checked) => setShootingOnly(checked === true)}
+                />
+                <Label htmlFor="shooting-only" className="text-sm cursor-pointer">
+                  撮影のみ
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="editing-only"
+                  checked={editingOnly}
+                  onCheckedChange={(checked) => setEditingOnly(checked === true)}
+                />
+                <Label htmlFor="editing-only" className="text-sm cursor-pointer">
+                  編集のみ
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="shooting-and-editing"
+                  checked={shootingAndEditing}
+                  onCheckedChange={(checked) => setShootingAndEditing(checked === true)}
+                />
+                <Label htmlFor="shooting-and-editing" className="text-sm cursor-pointer">
+                  撮影＆編集の制作のみ
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="tieup-post-production"
+                  checked={tieupPostProduction}
+                  onCheckedChange={(checked) => setTieupPostProduction(checked === true)}
+                />
+                <Label htmlFor="tieup-post-production" className="text-sm cursor-pointer">
+                  タイアップ投稿の制作
+                </Label>
+              </div>
+
+              <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="video-production-only"
-                    checked={isVideoProductionOnly}
-                    onCheckedChange={(checked) => setIsVideoProductionOnly(checked === true)}
+                    id="secondary-usage"
+                    checked={hasSecondaryUsage}
+                    onCheckedChange={(checked) => setHasSecondaryUsage(checked === true)}
                   />
-                  <Label htmlFor="video-production-only" className="text-sm cursor-pointer">
-                    納品動画の制作のみ
+                  <Label htmlFor="secondary-usage" className="text-sm cursor-pointer">
+                    二次利用の有無
                   </Label>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="secondary-usage"
-                      checked={hasSecondaryUsage}
-                      onCheckedChange={(checked) => setHasSecondaryUsage(checked === true)}
-                    />
-                    <Label htmlFor="secondary-usage" className="text-sm cursor-pointer">
-                      二次利用の有無
-                    </Label>
-                  </div>
-
-                  {hasSecondaryUsage && (
-                    <div className="ml-6 space-y-3">
-                      <div>
-                        <Label className="text-sm font-medium">利用期間</Label>
-                        <Select
-                          value={secondaryUsageDuration}
-                          onValueChange={setSecondaryUsageDuration}
-                        >
-                          <SelectTrigger className={errors.secondaryUsageDuration ? "border-destructive" : ""}>
-                            <SelectValue placeholder="期間を選択" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {secondaryUsageDurationOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {errors.secondaryUsageDuration && (
-                          <p className="text-xs text-destructive">{errors.secondaryUsageDuration}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <Label htmlFor="secondary-usage-purpose" className="text-sm font-medium">
-                          用途
-                        </Label>
-                        <Input
-                          id="secondary-usage-purpose"
-                          placeholder="例: サイト利用、広告利用"
-                          value={secondaryUsagePurpose}
-                          onChange={(e) => setSecondaryUsagePurpose(e.target.value)}
-                        />
-                      </div>
+                {hasSecondaryUsage && (
+                  <div className="ml-6 space-y-3">
+                    <div>
+                      <Label className="text-sm font-medium">利用期間</Label>
+                      <Select
+                        value={secondaryUsageDuration}
+                        onValueChange={setSecondaryUsageDuration}
+                      >
+                        <SelectTrigger className={errors.secondaryUsageDuration ? "border-destructive" : ""}>
+                          <SelectValue placeholder="期間を選択" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {secondaryUsageDurationOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.secondaryUsageDuration && (
+                        <p className="text-xs text-destructive">{errors.secondaryUsageDuration}</p>
+                      )}
                     </div>
-                  )}
-                </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="advertisement-appearance"
-                    checked={hasAdvertisementAppearance}
-                    onCheckedChange={(checked) => setHasAdvertisementAppearance(checked === true)}
-                  />
-                  <Label htmlFor="advertisement-appearance" className="text-sm cursor-pointer">
-                    広告出演の有無
-                  </Label>
-                </div>
+                    <div>
+                      <Label htmlFor="secondary-usage-purpose" className="text-sm font-medium">
+                        用途
+                      </Label>
+                      <Input
+                        id="secondary-usage-purpose"
+                        placeholder="例: サイト利用、広告利用"
+                        value={secondaryUsagePurpose}
+                        onChange={(e) => setSecondaryUsagePurpose(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="advertisement-appearance"
+                  checked={hasAdvertisementAppearance}
+                  onCheckedChange={(checked) => setHasAdvertisementAppearance(checked === true)}
+                />
+                <Label htmlFor="advertisement-appearance" className="text-sm cursor-pointer">
+                  広告出演の有無
+                </Label>
               </div>
             </CardContent>
           </Card>
